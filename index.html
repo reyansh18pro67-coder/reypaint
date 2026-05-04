@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ReyPaint | Premium Paintings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff3e3e;
+            --dark: #0a0c10;
+            --accent: #f8f9fa;
+            --whatsapp: #25d366;
+            --glass: rgba(255, 255, 255, 0.9);
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--accent); color: var(--dark); overflow-x: hidden; }
+
+        nav {
+            background: var(--glass); backdrop-filter: blur(15px);
+            height: 70px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 5%; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .brand { font-size: 22px; font-weight: 800; text-decoration: none; color: var(--dark); letter-spacing: -0.5px; }
+        .brand span { color: var(--primary); }
+
+        .wa-float {
+            position: fixed; bottom: 30px; right: 25px;
+            width: 60px; height: 60px; background: var(--whatsapp);
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+            z-index: 5000; transition: 0.3s;
+        }
+        .wa-float:hover { transform: scale(1.1) rotate(10deg); }
+
+        .hero {
+            padding: 60px 5%; display: grid; grid-template-columns: 1fr 1fr;
+            align-items: center; gap: 40px; background: var(--dark); color: white;
+        }
+        .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 20px; }
+        .hero p { opacity: 0.8; margin-bottom: 30px; max-width: 500px; }
+        .hero-img { width: 100%; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); height: 400px; object-fit: cover; }
+
+        .dev-profile {
+            padding: 60px 5%;
+            text-align: center;
+            background: white;
+        }
+        .dev-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            font-weight: 800;
+            box-shadow: 0 0 0 0 rgba(255, 62, 62, 0.4);
+            animation: pulse 2s infinite;
+        }
+        .dev-text { max-width: 600px; margin: 0 auto; line-height: 1.6; }
+        .dev-text h3 { font-size: 24px; margin-bottom: 10px; }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 62, 62, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 62, 62, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 62, 62, 0); }
+        }
+
+        .section-header { padding: 40px 5% 10px; font-size: 24px; font-weight: 800; }
+        .carousel-outer { overflow: hidden; padding: 20px 0; background: white; }
+        .carousel-track { display: flex; gap: 20px; animation: infiniteScroll 40s linear infinite; width: max-content; padding-left: 5%; }
+        .carousel-outer:hover .carousel-track { animation-play-state: paused; }
+        
+        .card { 
+            width: 280px; background: white; border-radius: 20px; overflow: hidden; 
+            cursor: pointer; transition: 0.3s; border: 1px solid #eee; display: flex; flex-direction: column;
+        }
+        .card img { width: 100%; height: 280px; object-fit: cover; }
+        .card-info { 
+            padding: 20px; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            min-height: 120px; 
+        }
+        .card-title { font-weight: 700; font-size: 17px; margin-bottom: 10px; line-height: 1.4; }
+        .card-price { color: var(--primary); font-size: 20px; font-weight: 800; margin-top: auto; }
+        .card:hover { transform: translateY(-10px); box-shadow: var(--shadow); border-color: var(--primary); }
+
+        @keyframes infiniteScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px); display: none; justify-content: center; align-items: flex-end; z-index: 2000;
+        }
+        .modal-content {
+            background: white; width: 100%; max-width: 500px; padding: 40px 30px;
+            border-radius: 30px 30px 0 0; animation: slideUp 0.4s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        input, select { width: 100%; padding: 16px; margin: 10px 0; border-radius: 14px; border: 1.5px solid #eee; font-size: 16px; outline: none; }
+        .btn { padding: 16px; border-radius: 14px; border: none; font-weight: 800; width: 100%; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-login-nav { width: auto; padding: 10px 20px; background: var(--primary); color: white; font-size: 14px; }
+
+        .profile-btn { display: none; align-items: center; gap: 10px; cursor: pointer; }
+        .avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+
+        footer { background: var(--dark); color: white; padding: 60px 5%; text-align: center; }
+
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero-img { display: none; }
+            .card { width: 240px; }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="https://wa.me/919431814467" class="wa-float" target="_blank">
+        <svg width="30" height="30" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.631 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+
+    <nav>
+        <a href="#" class="brand">Rey<span>Paint</span></a>
+        <div id="authSection">
+            <button id="loginBtn" class="btn btn-login-nav" onclick="openModal('authModal')">Sign In</button>
+            <div id="userProfile" class="profile-btn" onclick="logout()">
+                <span id="uName" style="font-weight: 600; font-size: 14px;"></span>
+                <div class="avatar" id="uInitial">U</div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div>
+            <h1 id="greeting">Masterpieces<br>on Canvas.</h1>
+            <p>Hand-painted art direct from Jhanjharpur. Support local artisans and own a unique piece of heritage.</p>
+            <button class="btn btn-primary" style="width: auto; padding: 15px 30px;" onclick="window.scrollTo(0, 1200)">Explore Gallery</button>
+        </div>
+        <img src="gpjabdul.jpg" class="hero-img">
+    </section>
+
+    <section class="dev-profile">
+        <div class="dev-avatar">R</div>
+        <div class="dev-text">
+            <h3>Hello, I am Reyansh</h3>
+            <p>I am from <b>Jhanjharpur, Bihar</b>. I am a developer of <b>10+ websites</b>. Thank you for visiting!</p>
+        </div>
+    </section>
+
+    <div class="section-header">Art Collection</div>
+    <div class="carousel-outer">
+        <div class="carousel-track">
+            <div class="card" onclick="openOrder('kerala mural', 4500)">
+                <img src="Kerala Mural.jpg">
+                <div class="card-info">
+                    <div class="card-title">kerala mural</div>
+                    <div class="card-price">₹4,500</div>
+                </div>
+            </div>
+            <div class="card" onclick="openOrder('scenery', 3200)">
+                <img src="rpg.jpg">
+                <div class="card-info">
+                    <div class="card-title">scenery</div>
+                    <div class="card-price">₹3,200</div>
+                </div>
+            </div>
+            <div class="card" onclick="openOrder('peacock', 7800)">
+                <img src="gpjabdul.jpg">
+                <div class="card-info">
+                    <div class="card-title">peacock</div>
+                    <div class="card-price">₹7,800</div>
+                </div>
+            </div>
+            <div class="card" onclick="openOrder('tree with leaves', 6000)">
+                <img src="i am sorry babu.jpg">
+                <div class="card-info">
+                    <div class="card-title">tree with leaves</div>
+                    <div class="card-price">₹6,000</div>
+                </div>
+            </div>
+            <div class="card" onclick="openOrder('butter fly', 5000)">
+                <img src="opgames.jpg">
+                <div class="card-info">
+                    <div class="card-title">butter fly</div>
+                    <div class="card-price">₹5,000</div>
+                </div>
+            </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <h2 style="color: var(--primary);">ReyPaint</h2>
+        <p style="margin: 15px 0;">Bihar Jhanjharpur, Bihar, India</p>
+        <p style="opacity: 0.5; font-size: 13px;">© 2026 ReyPaint Artisans | +91 9431814467</p>
+    </footer>
+
+    <!-- MODALS -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-content">
+            <h2>Sign In</h2>
+            <input type="text" id="loginName" placeholder="Full Name">
+            <input type="email" id="loginEmail" placeholder="Gmail">
+            <button class="btn btn-primary" onclick="doLogin()">Enter Gallery</button>
+            <button class="btn" style="background:transparent" onclick="closeModal('authModal')">Close</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-content">
+            <h2 id="orderArtName">Checkout</h2>
+            <p id="orderArtPrice" style="font-weight: 800; color: var(--primary); margin-bottom: 10px;"></p>
+            <input type="text" id="custName" placeholder="Your Name">
+            <input type="text" id="custAddress" placeholder="Full Address">
+            <select id="payMethod">
+                <option value="Cash on Delivery">Cash on Delivery</option>
+                <option value="Online / UPI">Online (PhonePe/GPay)</option>
+            </select>
+            <button class="btn btn-whatsapp" onclick="handlePayment()">Confirm & Order</button>
+            <button class="btn" style="background:transparent" onclick="closeModal('orderModal')">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedArt = "";
+        let selectedPrice = 0;
+        const myNumber = "9431814467";
+        const upiId = "lklife6@okicici"; 
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function doLogin() {
+            const name = document.getElementById('loginName').value;
+            const email = document.getElementById('loginEmail').value;
+            if(!name || !email) return alert("Please enter both Name and Gmail");
+            localStorage.setItem('reypaint_user', name);
+            localStorage.setItem('reypaint_email', email);
+            applyUser(name);
+            closeModal('authModal');
+        }
+
+        function applyUser(name) {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('uName').innerText = name;
+            document.getElementById('uInitial').innerText = name.charAt(0).toUpperCase();
+            document.getElementById('greeting').innerHTML = `Welcome,<br>${name}!`;
+        }
+
+        function logout() { 
+            localStorage.removeItem('reypaint_user'); 
+            localStorage.removeItem('reypaint_email');
+            location.reload(); 
+        }
+
+        function openOrder(name, price) {
+            selectedArt = name;
+            selectedPrice = price;
+            document.getElementById('orderArtName').innerText = name;
+            document.getElementById('orderArtPrice').innerText = "Price: ₹" + price;
+            const saved = localStorage.getItem('reypaint_user');
+            if(saved) document.getElementById('custName').value = saved;
+            openModal('orderModal');
+        }
+
+        function handlePayment() {
+            const name = document.getElementById('custName').value;
+            const addr = document.getElementById('custAddress').value;
+            const pay = document.getElementById('payMethod').value;
+            if(!name || !addr) return alert("Please fill all details");
+
+            if (pay === "Online / UPI") {
+                const upiUrl = `upi://pay?pa=${upiId}&pn=ReyPaint&am=${selectedPrice}&tn=Order%20for%20${selectedArt}&cu=INR`;
+                window.location.href = upiUrl;
+                setTimeout(() => {
+                    if(confirm("Payment app opened. Once paid, click OK to send order details to WhatsApp.")) {
+                        sendToWA(name, addr, pay);
+                    }
+                }, 3000);
+            } else {
+                sendToWA(name, addr, pay);
+            }
+        }
+
+        function sendToWA(name, addr, pay) {
+            const email = localStorage.getItem('reypaint_email') || "Not Provided";
+            const text = `*ORDER FROM REYPAINT*%0A*Item:* ${selectedArt}%0A*Price:* ₹${selectedPrice}%0A*Customer:* ${name}%0A*Gmail:* ${email}%0A*Address:* ${addr}%0A*Payment:* ${pay}`;
+            window.open(`https://wa.me/91${myNumber}?text=${text}`, '_blank');
+            closeModal('orderModal');
+        }
+
+        window.onload = () => {
+            const saved = localStorage.getItem('reypaint_user');
+            if(saved) applyUser(saved);
+        }
+    </script>
+</body>
+</html>
